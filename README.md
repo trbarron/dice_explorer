@@ -6,11 +6,10 @@ This is going to allow for quicker iteration of "fun dice"
 
 ## Features
 
-- **3D Dice Visualization**: View dice from multiple angles with camera controls
-- **Physics-Based Rolling**: Realistic dice rolling using Godot's physics engine
-- **Multiple Die Shapes**: Explore various polyhedral dice configurations
-- **Interactive Controls**: Roll dice with user input and observe results
-- **Camera System**: Freely navigate around the dice with intuitive camera controls
+- **3D Dice Visualization**
+- **Physics-Based Rolling**
+- **Multiple Die Shapes (soon)**
+- **Camera System**
 
 ## Demo
 
