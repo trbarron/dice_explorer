@@ -1,0 +1,92 @@
+[gd_resource type="ShaderMaterial" script_class="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" id="energy_shader" path="res://shaders/energy_shield.gdshader"]
+
+[resource]
+resource_name = "EnergyShieldMaterial"
+shader = ExtResource("energy_shader")
+shader_parameter/base_color = Color(0.2, 0.8, 1.0, 0.7)
+shader_parameter/rim_color = Color(0.0, 1.0, 2.0, 1.0)
+shader_parameter/pulse_speed = 2.0
+shader_parameter/rim_power = 3.0
+shader_parameter/noise_scale = 5.0
+shader_parameter/distortion_strength = 0.1
+shader_parameter/energy_intensity = 1.5
+shader_parameter/wave_frequency = 4.0
+shader_parameter/wave_amplitude = 0.05
+shader_parameter/glow_strength = 2.0
+
+[sub_resource type="Shader" id="energy_shader"]
+resource_name = "EnergyShield"
+code = "shader_type canvas_item;
+
+uniform float pulse_speed : hint_range(0.1, 5.0) = 2.0;
+uniform float rim_power : hint_range(1.0, 5.0) = 3.0;
+uniform float noise_scale : hint_range(1.0, 10.0) = 5.0;
+uniform float distortion_strength : hint_range(0.0, 0.5) = 0.1;
+uniform float energy_intensity : hint_range(0.5, 3.0) = 1.5;
+uniform float wave_frequency : hint_range(1.0, 10.0) = 4.0;
+uniform float wave_amplitude : hint_range(0.01, 0.1) = 0.05;
+uniform float glow_strength : hint_range(1.0, 5.0) = 2.0;
+uniform vec4 base_color : hint_color = vec4(0.2, 0.8, 1.0, 0.7);
+uniform vec4 rim_color : hint_color = vec4(0.0, 1.0, 2.0, 1.0);
+
+// Simple noise function
+float random(vec2 uv) {
+    return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+float noise(vec2 uv) {
+    vec2 i = floor(uv);
+    vec2 f = fract(uv);
+    
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+    
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    
+    return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+}
+
+void fragment() {
+    vec2 center_uv = UV - 0.5;
+    float distance_from_center = length(center_uv);
+    
+    // Create pulsing effect
+    float pulse = sin(TIME * pulse_speed) * 0.5 + 0.5;
+    
+    // Add animated noise for energy distortion
+    vec2 noise_uv = UV * noise_scale + TIME * 0.5;
+    float noise_value = noise(noise_uv);
+    
+    // Create waves
+    float waves = sin(UV.x * wave_frequency + TIME * 2.0) * wave_amplitude;
+    waves += sin(UV.y * wave_frequency * 0.7 + TIME * 1.5) * wave_amplitude;
+    
+    // Distort UVs
+    vec2 distorted_uv = UV + vec2(noise_value, waves) * distortion_strength;
+    
+    // Create rim lighting effect
+    float rim = 1.0 - distance_from_center;
+    rim = pow(rim, rim_power);
+    
+    // Combine effects
+    float energy_pattern = noise_value * pulse * energy_intensity;
+    energy_pattern += rim * 0.5;
+    energy_pattern += waves * 2.0;
+    
+    // Create final color
+    vec3 final_color = mix(base_color.rgb, rim_color.rgb, rim);
+    final_color *= energy_pattern;
+    
+    // Add glow
+    final_color *= glow_strength;
+    
+    // Calculate alpha with rim effect
+    float alpha = base_color.a * (energy_pattern + rim * 0.3);
+    alpha = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = vec4(final_color, alpha);
+}"

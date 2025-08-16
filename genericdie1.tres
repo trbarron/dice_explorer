@@ -1,0 +1,47 @@
+[gd_resource type="Shader" format=3 uid="uid://bams1mwrbk4go"]
+
+[resource]
+code = "shader_type spatial;
+
+uniform vec4 base_color : source_color = vec4(0.1, 0.1, 0.1, 0.0);
+uniform vec4 edge_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float edge_strength : hint_range(0.0, 5.0) = 3.0;
+uniform float edge_width : hint_range(0.1, 3.0) = 3.0;
+uniform float fresnel_power : hint_range(0.5, 5.0) = 12.0;
+uniform bool animate_edges = true;
+uniform float animation_speed : hint_range(0.1, 3.0) = 1.0;
+
+varying vec3 world_position;
+varying vec3 vertex_normal;
+
+void vertex() {
+	world_position = VERTEX;
+	vertex_normal = NORMAL;
+}
+
+void fragment() {
+	// Calculate fresnel for edge detection
+	float fresnel = dot(NORMAL, VIEW);
+	fresnel = 1.0 - abs(fresnel);
+	fresnel = pow(fresnel, fresnel_power);
+
+	// Edge detection based on fresnel
+	float edge_factor = pow(fresnel, edge_width);
+
+	// Optional animation
+	float time_factor = 1.0;
+	if (animate_edges) {
+		time_factor = (sin(TIME * animation_speed + world_position.x * 0.5) * 0.3 + 0.7);
+	}
+
+	// Mix base color with edge color
+	vec3 final_color = mix(base_color.rgb, edge_color.rgb, edge_factor * edge_strength * time_factor);
+
+	// Add emission for glowing edges
+	vec3 emission = edge_color.rgb * edge_factor * edge_strength * 0.3 * time_factor;
+
+	ALBEDO = final_color;
+	EMISSION = emission;
+	ROUGHNESS = 0.6;
+	METALLIC = 0.1;
+}"

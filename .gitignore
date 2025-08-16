@@ -1,0 +1,10 @@
+.godot/
+.vscode/
+
+# Large binary files
+*.jpg
+*.png
+*.mp4
+*.glb
+*.obj
+skyboxes/

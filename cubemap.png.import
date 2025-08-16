@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://do1rs6x8nvbka"
-valid=false
+path.s3tc="res://.godot/imported/cubemap.png-991b8484ed060d87b1ee79eaa6e757ce.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://cubemap.png"
+dest_files=["res://.godot/imported/cubemap.png-991b8484ed060d87b1ee79eaa6e757ce.s3tc.ctex"]
 
 [params]
 

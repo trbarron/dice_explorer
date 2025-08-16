@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct5q0r5vv0mmg"
-path="res://.godot/imported/chckerboard.png-a785471539d4241c83ad5aa312460bec.ctex"
+path.s3tc="res://.godot/imported/chckerboard.png-a785471539d4241c83ad5aa312460bec.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://chckerboard.png"
-dest_files=["res://.godot/imported/chckerboard.png-a785471539d4241c83ad5aa312460bec.ctex"]
+dest_files=["res://.godot/imported/chckerboard.png-a785471539d4241c83ad5aa312460bec.s3tc.ctex"]
 
 [params]
 

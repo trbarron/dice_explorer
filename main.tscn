@@ -1,35 +1,48 @@
-[gd_scene load_steps=11 format=3 uid="uid://b2jdn7uvg8bui"]
+[gd_scene load_steps=15 format=3 uid="uid://b2jdn7uvg8bui"]
 
 [ext_resource type="Script" uid="uid://b2rm371nc2sww" path="res://DiceManager.gd" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://vjv4m5nd0485" path="res://die.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bk481qtwselk0" path="res://genericdie1.tscn" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://qk0wk4kfrrxc" path="res://DiceUI.gd" id="3_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://bvmj06gf3wf4c" path="res://grimace.jpg" id="3_7mycd"]
+[ext_resource type="Texture2D" uid="uid://ct5q0r5vv0mmg" path="res://chckerboard.png" id="3_7mycd"]
 [ext_resource type="Script" uid="uid://q1gg5py3vi0e" path="res://DiceCameraController.gd" id="3_lquwl"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://1kk8adfmax0g" path="res://cubemap2.png" id="4_7mycd"]
+[ext_resource type="Texture2D" uid="uid://c1r16dpj6nexh" path="res://skyboxes/pexels-francesco-ungaro-998641.jpg" id="7_272bh"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_lquwl"]
-material = SubResource("StandardMaterial3D_1bvp3")
-size = Vector3(8, 0.2, 8)
+size = Vector3(80, 0.2, 80)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
-disable_ambient_light = true
 albedo_texture = ExtResource("3_7mycd")
-metallic = 0.36
-roughness = 0.6
-proximity_fade_enabled = true
+metallic_specular = 0.3
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("4_7mycd")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
-size = Vector3(100, 0.2, 100)
+size = Vector3(10000, 0.2, 10000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
-size = Vector3(100, 100, 1)
+size = Vector3(10000, 10000, 1)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_kek77"]
+panorama = ExtResource("7_272bh")
+
+[sub_resource type="Sky" id="Sky_4c57u"]
+sky_material = SubResource("PanoramaSkyMaterial_kek77")
+
+[sub_resource type="Environment" id="Environment_efxa6"]
+background_mode = 2
+sky = SubResource("Sky_4c57u")
 
 [node name="Main" type="Node3D"]
 
 [node name="DiceManager" type="Node3D" parent="."]
 script = ExtResource("1_ig7tw")
-die_scene = ExtResource("2_h2yge")
+die_scene = ExtResource("2_lquwl")
+horizontal_force_multiplier = 1.0
+max_horizontal_spread = 0.004
+throw_force_range = Vector2(0.04, 0.003)
+throw_height = 9.0
 
 [node name="Table" type="StaticBody3D" parent="."]
 
@@ -43,19 +56,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="Wall1" type="CollisionShape3D" parent="Table"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 4)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 40)
 shape = SubResource("BoxShape3D_h2yge")
 
 [node name="Wall2" type="CollisionShape3D" parent="Table"]
-transform = Transform3D(0.999712, -0.0240134, 1.04966e-09, 0, -4.37114e-08, -1, 0.0240134, 0.999712, -4.36988e-08, 0, -1, -4)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -1, -40)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="Wall3" type="CollisionShape3D" parent="Table"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -4, -1, 0)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -40, -1, 0)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="Wall4" type="CollisionShape3D" parent="Table"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 4, -1, 0)
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 40, -1, 0)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -64,9 +77,14 @@ script = ExtResource("3_lquwl")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 0)
-light_energy = 3.465
+light_energy = 0.0
 light_indirect_energy = 3.818
 light_angular_distance = 25.0
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.481645, -0.875291, -0.0434027, 0.134233, 0.0247415, 0.990641, -0.866025, -0.482963, 0.12941, 0, 15.0693, 6)
+light_energy = 2.744
+light_bake_mode = 1
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -86,5 +104,12 @@ offset_bottom = 40.0
 layout_mode = 2
 text = "Roll Dice"
 
+[node name="AutoRollButton" type="Button" parent="UI/Control/VBoxContainer"]
+layout_mode = 2
+text = "Auto Roll"
+
 [node name="ResultsLabel" type="Label" parent="UI/Control/VBoxContainer"]
 layout_mode = 2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_efxa6")
